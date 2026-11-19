@@ -1,0 +1,28 @@
+{
+  "site_title": "Akshara Lokam",
+  "max_series": 5,
+  "chapters_per_series": 15,
+  "states": ["Andhra Pradesh", "Telangana"],
+  "motifs": [
+    "Sunny / Clear: The sun shines brightly with little to no cloud cover",
+    "Partially Cloudy: The sky features a mix of sunshine and scattered clouds",
+    "Cloudy / Overcast: A thick blanket of clouds covers most or all of the sky",
+    "Rainy: Liquid water droplets fall steadily from the clouds",
+    "Drizzle: Very light, fine rain falling in small drops",
+    "Stormy (Thunderstorm): Rain accompanied by thunder, lightning, and strong gusts",
+    "Snowy: Frozen precipitation in the form of snowflakes falls to the ground",
+    "Sleet / Ice Pellets: Frozen or semi-frozen raindrops that bounce upon impact",
+    "Hail: Balls or lumps of ice dropping from severe thunderstorms",
+    "Windy: Sustained or strong breezes that make outdoor objects move",
+    "Breezy: Mild, light, and comfortable air movement",
+    "Foggy: Tiny water droplets suspended in the air at ground level, reducing visibility",
+    "Mist: A lighter form of fog with slightly better visibility",
+    "Humid: Warm air holding a high amount of moisture, making the air feel heavy or sticky",
+    "Dry: Low moisture and humidity levels in the atmosphere",
+    "Hot / Heatwave: Abnormally high and sustained ambient temperatures",
+    "Freezing / Cold: Low temperatures near or well below the freezing point of water",
+    "Tornado: A violently rotating column of air extending from a thunderstorm to the ground",
+    "Hurricane / Cyclone: A massive, rotating storm system with high-speed winds originating over warm ocean waters",
+    "Blizzard / Snowstorm: Heavy falling snow combined with fierce, blinding winds"
+  ]
+}
