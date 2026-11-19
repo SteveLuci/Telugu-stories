@@ -1,0 +1,24 @@
+{
+  "active_series_number": 1,
+  "total_series_created": 1,
+  "series_title": "గోదావరి సంధ్యలు (Godavari Sandhyalu)",
+  "state": "Andhra Pradesh",
+  "city": "Rajahmundry",
+  "characters": [
+    {
+      "name_en": "Aadi Narayana",
+      "name_te": "ఆది నారాయణ",
+      "gender": "Male",
+      "role": "Archivist and late-night listener"
+    },
+    {
+      "name_en": "Aamani",
+      "name_te": "ఆమని",
+      "gender": "Female",
+      "role": "Painter returning to her ancestral home"
+    }
+  ],
+  "next_chapter": 1,
+  "completed_series": [],
+  "plot_memory": "Series 1 opens along the Godavari banks in Rajahmundry as Aamani returns with a locked wooden box and Aadi Narayana awaits the first monsoon breeze."
+}
