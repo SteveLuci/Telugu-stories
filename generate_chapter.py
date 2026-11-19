@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import socket
 import time
 import urllib.error
 from datetime import datetime, timezone
@@ -35,7 +36,7 @@ system_prompt = """
 You are a literary serial fiction writer for Akshara Lokam.
 Write in rich, rhythmic poetic Telugu prose with natural colloquial regional dialogue—never stiff textbook translations.
 Ground scenes in authentic cultural and regional sensory texture specific to the given State and City/Town.
-End the chapter with a compelling cliffhanger.
+Keep the chapter concise and engaging (around 4-6 paragraphs) and end with a compelling cliffhanger.
 Return ONLY valid UTF-8 JSON matching this exact schema:
 {
   "title": "string",
@@ -72,12 +73,13 @@ models_to_try = list(dict.fromkeys(models_to_try))
 
 raw_resp = None
 last_error = None
+request_timeout = int(os.environ.get("GEMINI_TIMEOUT", "150"))
 
 for model_name in models_to_try:
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={API_KEY}"
     model_succeeded = False
 
-    for attempt in range(1, 4):  # Up to 3 attempts per model for transient 503/429 errors
+    for attempt in range(1, 4):
         req = request.Request(
             url,
             data=json.dumps(payload).encode("utf-8"),
@@ -85,7 +87,7 @@ for model_name in models_to_try:
             method="POST"
         )
         try:
-            with request.urlopen(req, timeout=60) as resp:
+            with request.urlopen(req, timeout=request_timeout) as resp:
                 raw_resp = json.loads(resp.read().decode("utf-8"))
             print(f"Generated chapter using model: {model_name} (attempt {attempt})")
             model_succeeded = True
@@ -95,8 +97,17 @@ for model_name in models_to_try:
             print(f"Model {model_name} attempt {attempt} failed with HTTP {e.code}: {err_body}")
             last_error = e
             if e.code == 404:
-                break  # Model not available; try next model in list
+                break
             if e.code in (429, 500, 502, 503, 504) and attempt < 3:
+                wait_sec = 2 * attempt
+                print(f"Retrying {model_name} in {wait_sec}s...")
+                time.sleep(wait_sec)
+                continue
+            break
+        except (TimeoutError, socket.timeout, urllib.error.URLError) as e:
+            print(f"Model {model_name} attempt {attempt} timed out / network error: {e}")
+            last_error = e
+            if attempt < 3:
                 wait_sec = 2 * attempt
                 print(f"Retrying {model_name} in {wait_sec}s...")
                 time.sleep(wait_sec)
@@ -136,7 +147,7 @@ if target_series is None:
 
 target_series["chapters"].append(new_entry)
 
-# Check if current series finished and rotate to next series (up to max 5)[cite: 3]
+# Check if current series finished and rotate to next series (up to max 5)[cite: 2]
 if chapter_num >= chapters_per_series:
     state.setdefault("completed_series", []).append(state["series_title"])
     next_series_num = current_series_num + 1
