@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="te" data-theme="sepia">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chapter — Akshara Lokam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6efe2;
+      --text: #2c241b;
+      --card: #efe4cf;
+      --accent: #7a3e1d;
+    }
+    [data-theme="dark"] {
+      --bg: #141416;
+      --text: #eae6df;
+      --card: #1f2024;
+      --accent: #e09f67;
+    }
+    body {
+      margin: 0;
+      font-family: "Noto Sans Telugu", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+    .topbar, .pager {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    a.btn, button {
+      background: var(--card);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    #ch-body p {
+      margin-bottom: 1.15rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <a class="btn" href="index.html">← All Chapters</a>
+      <button id="theme-toggle" type="button">Dark Mode</button>
+    </div>
+
+    <h1 id="ch-title">Loading...</h1>
+    <div id="ch-body"></div>
+
+    <div class="pager">
+      <a id="prev-btn" class="btn disabled" href="#">← Previous</a>
+      <a id="next-btn" class="btn disabled" href="#">Next →</a>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const toggleBtn = document.getElementById("theme-toggle");
+    const savedTheme = localStorage.getItem("theme") || "sepia";
+    root.setAttribute("data-theme", savedTheme);
+    toggleBtn.textContent = savedTheme === "dark" ? "Sepia Mode" : "Dark Mode";
+
+    toggleBtn.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "dark" ? "sepia" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+      toggleBtn.textContent = next === "dark" ? "Sepia Mode" : "Dark Mode";
+    });
+
+    async function initStory() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const chNum = parseInt(params.get("ch") || "1", 10);
+
+        const [stateRes, storiesRes] = await Promise.all([
+          fetch("series_state.json"),
+          fetch("stories.json")
+        ]);
+        const state = stateRes.ok ? await stateRes.json() : {};
+        const data = storiesRes.ok ? await storiesRes.json() : {};
+
+        const seriesNum = parseInt(params.get("series") || state.active_series_number || "1", 10);
+        const targetSeries =
+          (data.series || []).find(s => s.series_number === seriesNum) ||
+          (data.series || [])[0] ||
+          { chapters: [] };
+
+        const chapters = targetSeries.chapters || [];
+        const activeSNum = targetSeries.series_number || seriesNum;
+        const current = chapters.find(c => c.chapter === chNum) || chapters[0];
+
+        if (!current) {
+          document.getElementById("ch-title").textContent = "Chapter not found";
+          return;
+        }
+
+        document.title = `Chapter ${current.chapter}: ${current.title} — Akshara Lokam`;
+        document.getElementById("ch-title").textContent = `Chapter ${current.chapter}: ${current.title}`;
+        document.getElementById("ch-body").innerHTML = (current.html_paragraphs || []).join("");
+
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+
+        if (chapters.some(c => c.chapter === current.chapter - 1)) {
+          prevBtn.href = `story.html?series=${activeSNum}&ch=${current.chapter - 1}`;
+          prevBtn.classList.remove("disabled");
+        }
+        if (chapters.some(c => c.chapter === current.chapter + 1)) {
+          nextBtn.href = `story.html?series=${activeSNum}&ch=${current.chapter + 1}`;
+          nextBtn.classList.remove("disabled");
+        }
+      } catch (err) {
+        document.getElementById("ch-title").textContent = "Unable to load chapter";
+      }
+    }
+    initStory();
+  </script>
+</body>
+</html>
