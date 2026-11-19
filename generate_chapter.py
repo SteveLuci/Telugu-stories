@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import urllib.error
 from datetime import datetime, timezone
 from urllib import request
 
@@ -56,22 +57,43 @@ Previous Plot Memory: {state["plot_memory"]}
 Generate Chapter {chapter_num} now.
 """
 
-url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
 payload = {
     "systemInstruction": {"parts": [{"text": system_prompt}]},
     "contents": [{"parts": [{"text": user_prompt}]}],
     "generationConfig": {"responseMimeType": "application/json"}
 }
 
-req = request.Request(
-    url,
-    data=json.dumps(payload).encode("utf-8"),
-    headers={"Content-Type": "application/json"},
-    method="POST"
-)
+models_to_try = []
+if os.environ.get("GEMINI_MODEL"):
+    models_to_try.append(os.environ["GEMINI_MODEL"].strip())
+models_to_try.extend(["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.0-flash"])
+models_to_try = list(dict.fromkeys(models_to_try))
 
-with request.urlopen(req, timeout=60) as resp:
-    raw_resp = json.loads(resp.read().decode("utf-8"))
+raw_resp = None
+last_error = None
+
+for model_name in models_to_try:
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={API_KEY}"
+    req = request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST"
+    )
+    try:
+        with request.urlopen(req, timeout=60) as resp:
+            raw_resp = json.loads(resp.read().decode("utf-8"))
+        print(f"Generated chapter using model: {model_name}")
+        break
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode("utf-8", errors="replace")
+        print(f"Model {model_name} failed with HTTP {e.code}: {err_body}")
+        last_error = e
+        if e.code != 404:
+            raise
+
+if raw_resp is None:
+    raise last_error or RuntimeError("All Gemini models returned 404 Not Found.")
 
 chapter_data = json.loads(raw_resp["candidates"][0]["content"]["parts"][0]["text"])
 
@@ -100,6 +122,7 @@ if target_series is None:
 
 target_series["chapters"].append(new_entry)
 
+# Check if current series finished and rotate to next series (up to max 5)[cite: 3]
 if chapter_num >= chapters_per_series:
     state.setdefault("completed_series", []).append(state["series_title"])
     next_series_num = current_series_num + 1
