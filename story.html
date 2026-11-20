@@ -6,29 +6,37 @@
   <title>Chapter — Akshara Lokam</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f6efe2;
-      --text: #2c241b;
-      --card: #efe4cf;
-      --accent: #7a3e1d;
+      --bg: #f7f1e5;
+      --surface: #fffdf8;
+      --text: #241c14;
+      --muted: #685848;
+      --accent: #9a3b1b;
+      --border: rgba(110, 72, 42, 0.16);
+      --container-max: 760px;
+      --font-scale: 1;
     }
     [data-theme="dark"] {
-      --bg: #141416;
-      --text: #eae6df;
-      --card: #1f2024;
-      --accent: #e09f67;
+      --bg: #111215;
+      --surface: #181a1f;
+      --text: #f0ece4;
+      --muted: #a69f93;
+      --accent: #e59d5c;
+      --border: rgba(255, 255, 255, 0.1);
     }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Noto Sans Telugu", sans-serif;
+      font-family: "Noto Sans Telugu", "Plus Jakarta Sans", sans-serif;
+      font-size: calc(16px * var(--font-scale));
       background: var(--bg);
       color: var(--text);
-      line-height: 1.8;
+      line-height: 1.9;
     }
     .wrap {
-      max-width: 720px;
+      max-width: var(--container-max);
       margin: 0 auto;
       padding: 2rem 1.25rem 4rem;
     }
@@ -37,37 +45,48 @@
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
-      margin: 1.5rem 0;
+      margin: 1.25rem 0 2rem;
+      flex-wrap: wrap;
     }
-    a.btn, button {
-      background: var(--card);
+    a.btn, button.btn {
+      background: var(--surface);
       color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 0.45rem 0.9rem;
-      border-radius: 6px;
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.95rem;
+      border-radius: 999px;
       text-decoration: none;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
-      font-family: inherit;
     }
-    .disabled {
-      opacity: 0.4;
-      pointer-events: none;
+    a.btn:hover, button.btn:hover { border-color: var(--accent); }
+    .disabled { opacity: 0.4; pointer-events: none; }
+    article.reader-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem 1.65rem;
     }
-    #ch-body p {
-      margin-bottom: 1.15rem;
+    #ch-title {
+      margin: 0 0 1.25rem;
+      font-size: clamp(1.35rem, 3.2vw, 1.9rem);
+      line-height: 1.4;
     }
+    #ch-body p { margin: 0 0 1.2rem; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="topbar">
       <a class="btn" href="index.html">← All Chapters</a>
-      <button id="theme-toggle" type="button">Dark Mode</button>
+      <button id="theme-toggle" class="btn" type="button">Dark Mode</button>
     </div>
 
-    <h1 id="ch-title">Loading...</h1>
-    <div id="ch-body"></div>
+    <article class="reader-card">
+      <h1 id="ch-title">Loading...</h1>
+      <div id="ch-body"></div>
+    </article>
 
     <div class="pager">
       <a id="prev-btn" class="btn disabled" href="#">← Previous</a>
@@ -91,15 +110,24 @@
 
     async function initStory() {
       try {
+        const cacheBust = `?t=${Date.now()}`;
         const params = new URLSearchParams(window.location.search);
         const chNum = parseInt(params.get("ch") || "1", 10);
 
-        const [stateRes, storiesRes] = await Promise.all([
-          fetch("series_state.json"),
-          fetch("stories.json")
+        const [configRes, stateRes, storiesRes] = await Promise.all([
+          fetch("story_config.json" + cacheBust),
+          fetch("series_state.json" + cacheBust),
+          fetch("stories.json" + cacheBust)
         ]);
+        const config = configRes.ok ? await configRes.json() : {};
         const state = stateRes.ok ? await stateRes.json() : {};
         const data = storiesRes.ok ? await storiesRes.json() : {};
+
+        if (config.design) {
+          if (config.design.accent) root.style.setProperty("--accent", config.design.accent);
+          if (config.design.bg && root.getAttribute("data-theme") !== "dark") root.style.setProperty("--bg", config.design.bg);
+          if (config.design.font_scale) root.style.setProperty("--font-scale", String(config.design.font_scale));
+        }
 
         const seriesNum = parseInt(params.get("series") || state.active_series_number || "1", 10);
         const targetSeries =
@@ -116,7 +144,8 @@
           return;
         }
 
-        document.title = `Chapter ${current.chapter}: ${current.title} — Akshara Lokam`;
+        const siteName = config.site_title || "Akshara Lokam";
+        document.title = `Chapter ${current.chapter}: ${current.title} — ${siteName}`;
         document.getElementById("ch-title").textContent = `Chapter ${current.chapter}: ${current.title}`;
         document.getElementById("ch-body").innerHTML = (current.html_paragraphs || []).join("");
 
