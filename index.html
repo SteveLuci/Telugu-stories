@@ -10,30 +10,28 @@
   <style>
     :root {
       --bg: #f7f1e5;
-      --bg-grad: radial-gradient(circle at top right, rgba(168, 76, 36, 0.08), transparent 45%),
-                 radial-gradient(circle at bottom left, rgba(180, 120, 50, 0.08), transparent 45%);
       --surface: #fffdf8;
       --surface-alt: #f0e5d1;
       --text: #241c14;
       --muted: #685848;
       --accent: #9a3b1b;
-      --accent-soft: rgba(154, 59, 27, 0.1);
+      --accent-soft: rgba(154, 59, 27, 0.12);
       --danger: #b42318;
       --success: #166534;
       --border: rgba(110, 72, 42, 0.16);
       --shadow: 0 10px 30px rgba(45, 26, 10, 0.06);
+      --container-max: 860px;
+      --font-scale: 1;
     }
 
     [data-theme="dark"] {
       --bg: #111215;
-      --bg-grad: radial-gradient(circle at top right, rgba(224, 159, 103, 0.08), transparent 45%),
-                 radial-gradient(circle at bottom left, rgba(130, 95, 65, 0.08), transparent 45%);
       --surface: #181a1f;
       --surface-alt: #20232a;
       --text: #f0ece4;
       --muted: #a69f93;
       --accent: #e59d5c;
-      --accent-soft: rgba(229, 157, 92, 0.14);
+      --accent-soft: rgba(229, 157, 92, 0.15);
       --danger: #f97066;
       --success: #4ade80;
       --border: rgba(255, 255, 255, 0.1);
@@ -46,15 +44,15 @@
       margin: 0;
       min-height: 100vh;
       font-family: "Noto Sans Telugu", "Plus Jakarta Sans", sans-serif;
+      font-size: calc(16px * var(--font-scale));
       background-color: var(--bg);
-      background-image: var(--bg-grad);
       color: var(--text);
       line-height: 1.85;
       -webkit-font-smoothing: antialiased;
     }
 
     .wrap {
-      max-width: 860px;
+      max-width: var(--container-max);
       margin: 0 auto;
       padding: 2rem 1.25rem 4rem;
     }
@@ -70,7 +68,7 @@
     }
 
     .brand-eyebrow {
-      font-family: "Plus Jakarta Sans", sans-serif;
+      font-family: "Plus Jakarta Sans", "Noto Sans Telugu", sans-serif;
       font-size: 0.75rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -127,7 +125,7 @@
       font-weight: 600;
       cursor: pointer;
       box-shadow: var(--shadow);
-      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+      transition: transform 0.15s ease, border-color 0.2s ease;
     }
 
     .btn:hover { transform: translateY(-1px); border-color: var(--accent); }
@@ -136,7 +134,7 @@
     .btn-danger { color: var(--danger); border-color: var(--danger); }
     .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; border-radius: 8px; }
 
-    /* Admin / Edit Studio Bar */
+    /* WordPress-like Studio & Customizer */
     .studio-panel {
       display: none;
       background: var(--surface);
@@ -165,12 +163,49 @@
       color: var(--accent);
     }
 
+    .tab-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
     .studio-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 0.85rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
     }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 0.6rem 0 0.9rem;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.85rem;
+    }
+
+    .toggle-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+
+    .toggle-row input[type="checkbox"] { width: auto; }
 
     label.field {
       display: flex;
@@ -191,6 +226,12 @@
       padding: 0.55rem 0.75rem;
       font-family: "Noto Sans Telugu", "Plus Jakarta Sans", sans-serif;
       font-size: 0.92rem;
+    }
+
+    input[type="color"] {
+      padding: 0.2rem;
+      height: 40px;
+      cursor: pointer;
     }
 
     textarea { min-height: 110px; line-height: 1.7; resize: vertical; }
@@ -295,14 +336,10 @@
       border-radius: 6px;
     }
 
-    .chapter-link {
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-
-    .chapter-title { margin: 0.25rem 0 0.5rem; font-size: 1.22rem; font-weight: 700; }
+    .chapter-link { text-decoration: none; color: inherit; display: block; }
+    .chapter-title { margin: 0.25rem 0 0.4rem; font-size: 1.22rem; font-weight: 700; }
     .chapter-excerpt { margin: 0; color: var(--muted); font-size: 0.98rem; }
+    body.hide-excerpts .chapter-excerpt { display: none; }
 
     .edit-controls {
       display: none;
@@ -315,7 +352,6 @@
 
     .edit-only { display: none; }
     body.editing .edit-only { display: block; }
-    body.editing .edit-only-inline { display: inline-flex; }
 
     .modal-backdrop {
       display: none;
@@ -360,7 +396,7 @@
   <div class="wrap">
     <div class="top-bar">
       <div>
-        <div class="brand-eyebrow">Daily Telugu Serial Fiction</div>
+        <div id="brand-eyebrow" class="brand-eyebrow">Daily Telugu Serial Fiction</div>
         <h1 id="site-title" class="site-title">Akshara Lokam</h1>
       </div>
       <div class="header-actions">
@@ -376,63 +412,131 @@
       <a href="privacy.html">Privacy Policy</a>
     </nav>
 
-    <!-- Studio Edit Bar (visible only in Edit Mode) -->
-    <section class="studio-panel" aria-label="Site Editor">
+    <!-- WordPress-Style Studio & Customizer Panel -->
+    <section class="studio-panel" aria-label="WordPress Style Customizer and Editor">
       <div class="studio-header">
-        <h2 class="studio-title">Studio Edit Mode — Add, Edit, or Remove Content</h2>
+        <h2 class="studio-title">Akshara Lokam Studio</h2>
         <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
           <button id="download-json-btn" class="btn btn-sm" type="button">Download JSON Files</button>
           <button id="publish-github-btn" class="btn btn-primary btn-sm" type="button">Save &amp; Publish to GitHub</button>
         </div>
       </div>
 
-      <div class="studio-grid">
+      <div class="tab-row" role="tablist">
+        <button class="btn btn-sm btn-primary" data-tab="tab-content" type="button">Story &amp; Series</button>
+        <button class="btn btn-sm" data-tab="tab-customize" type="button">Customize Design (WP Style)</button>
+        <button class="btn btn-sm" data-tab="tab-publish" type="button">GitHub Connection</button>
+      </div>
+
+      <!-- Tab 1: Story & Series -->
+      <div id="tab-content" class="tab-pane active">
+        <div class="studio-grid">
+          <label class="field">
+            Series Title
+            <input id="edit-series-title" type="text" />
+          </label>
+          <label class="field">
+            City / Town
+            <input id="edit-city" type="text" />
+          </label>
+          <label class="field">
+            State
+            <input id="edit-state" type="text" />
+          </label>
+        </div>
         <label class="field">
-          GitHub Repo (owner/repo)
-          <input id="gh-repo" type="text" value="SteveLuci/Telugu-stories" />
-        </label>
-        <label class="field">
-          Branch
-          <input id="gh-branch" type="text" value="main" />
-        </label>
-        <label class="field">
-          GitHub Token (stored only in your browser)
-          <input id="gh-token" type="password" placeholder="github_pat_..." />
+          Plot Memory (guides next AI chapter)
+          <textarea id="edit-plot-memory" style="min-height:70px;"></textarea>
         </label>
       </div>
 
-      <div class="studio-grid">
-        <label class="field">
-          Series Title
-          <input id="edit-series-title" type="text" />
-        </label>
-        <label class="field">
-          City / Town
-          <input id="edit-city" type="text" />
-        </label>
-        <label class="field">
-          State
-          <input id="edit-state" type="text" />
-        </label>
+      <!-- Tab 2: WordPress-Style Customizer -->
+      <div id="tab-customize" class="tab-pane">
+        <div class="preset-row">
+          <button class="btn btn-sm" type="button" onclick="applyPreset('parchment')">Warm Parchment</button>
+          <button class="btn btn-sm" type="button" onclick="applyPreset('terracotta')">Godavari Terracotta</button>
+          <button class="btn btn-sm" type="button" onclick="applyPreset('palm')">Palm Leaf</button>
+          <button class="btn btn-sm" type="button" onclick="applyPreset('night')">Night Lamp</button>
+        </div>
+
+        <div class="studio-grid">
+          <label class="field">
+            Site Title
+            <input id="cust-site-title" type="text" />
+          </label>
+          <label class="field">
+            Header Eyebrow Tagline
+            <input id="cust-eyebrow" type="text" />
+          </label>
+          <label class="field">
+            Footer Credit Text
+            <input id="cust-footer-text" type="text" />
+          </label>
+        </div>
+
+        <div class="studio-grid">
+          <label class="field">
+            Accent Color
+            <input id="cust-accent" type="color" value="#9a3b1b" />
+          </label>
+          <label class="field">
+            Background Color
+            <input id="cust-bg" type="color" value="#f7f1e5" />
+          </label>
+          <label class="field">
+            Font Size Scale
+            <select id="cust-font-scale">
+              <option value="0.95">Compact (95%)</option>
+              <option value="1">Standard (100%)</option>
+              <option value="1.1">Comfortable (110%)</option>
+              <option value="1.2">Large Reader (120%)</option>
+            </select>
+          </label>
+          <label class="field">
+            Page Width
+            <select id="cust-max-width">
+              <option value="740px">Narrow Reader (740px)</option>
+              <option value="860px">Editorial (860px)</option>
+              <option value="1000px">Wide (1000px)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <label><input id="cust-show-hero" type="checkbox" checked /> Show Series &amp; Characters Card</label>
+          <label><input id="cust-show-excerpts" type="checkbox" checked /> Show Chapter Excerpts</label>
+        </div>
       </div>
 
-      <label class="field">
-        Plot Memory (guides next AI chapter)
-        <textarea id="edit-plot-memory" style="min-height:70px;"></textarea>
-      </label>
+      <!-- Tab 3: GitHub Connection -->
+      <div id="tab-publish" class="tab-pane">
+        <div class="studio-grid">
+          <label class="field">
+            GitHub Repo (owner/repo)
+            <input id="gh-repo" type="text" value="SteveLuci/Telugu-stories" />
+          </label>
+          <label class="field">
+            Branch
+            <input id="gh-branch" type="text" value="main" />
+          </label>
+          <label class="field">
+            GitHub Token (stored only in your browser)
+            <input id="gh-token" type="password" placeholder="github_pat_..." />
+          </label>
+        </div>
+      </div>
 
       <div id="studio-status" class="status-msg"></div>
     </section>
 
     <div id="ad-slot-top"></div>
 
-    <section class="hero-card" aria-live="polite">
+    <section id="hero-section" class="hero-card" aria-live="polite">
       <div id="series-badge" class="series-pill">Series 1</div>
       <h2 id="series-title" class="series-heading">Loading series...</h2>
       <p id="series-location" class="series-location"></p>
       <div id="character-list" class="char-chips"></div>
 
-      <!-- Add Character inline form in Edit Mode -->
       <div class="edit-only" style="margin-top:1rem; padding-top:0.9rem; border-top:1px dashed var(--border);">
         <div class="studio-grid" style="margin-bottom:0.5rem;">
           <input id="new-char-te" type="text" placeholder="Telugu Name (ఉదా: కావ్య)" />
@@ -445,13 +549,13 @@
 
     <div class="section-head">
       <div class="section-label">Published Chapters</div>
-      <button id="open-new-chapter-btn" class="btn btn-primary btn-sm edit-only-inline" type="button" style="display:none;">+ Add Chapter</button>
+      <button id="open-new-chapter-btn" class="btn btn-primary btn-sm edit-only" type="button">+ Add Chapter</button>
     </div>
 
     <main id="chapter-list"></main>
 
     <footer>
-      <span>&copy; Akshara Lokam</span>
+      <span id="footer-copy">&copy; Akshara Lokam</span>
       <div>
         <a href="about.html">About</a>
         <a href="contact.html">Contact</a>
@@ -504,20 +608,117 @@
       themeBtn.textContent = next === "dark" ? "Sepia Mode" : "Dark Mode";
     });
 
+    let appConfig = {};
     let appState = {};
     let appStories = { series: [] };
     let editingChapterIndex = null;
 
-    // Restore saved GitHub settings in browser
     document.getElementById("gh-repo").value = localStorage.getItem("ak_gh_repo") || "SteveLuci/Telugu-stories";
     document.getElementById("gh-branch").value = localStorage.getItem("ak_gh_branch") || "main";
     document.getElementById("gh-token").value = localStorage.getItem("ak_gh_token") || "";
+
+    // Tabs inside Studio
+    document.querySelectorAll("[data-tab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-tab]").forEach(b => b.classList.remove("btn-primary"));
+        document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+        btn.classList.add("btn-primary");
+        document.getElementById(btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    function ensureCustomDesign() {
+      appConfig.design = appConfig.design || {
+        eyebrow: "Daily Telugu Serial Fiction",
+        footer_text: "© Akshara Lokam",
+        accent: "#9a3b1b",
+        bg: "#f7f1e5",
+        font_scale: 1,
+        max_width: "860px",
+        show_hero: true,
+        show_excerpts: true
+      };
+    }
+
+    function applyDesignToPage() {
+      ensureCustomDesign();
+      const d = appConfig.design;
+      const title = appConfig.site_title || "Akshara Lokam";
+      document.title = `${title} — అక్షర లోకం`;
+      document.getElementById("site-title").textContent = title;
+      document.getElementById("brand-eyebrow").textContent = d.eyebrow || "Daily Telugu Serial Fiction";
+      document.getElementById("footer-copy").textContent = d.footer_text || "© Akshara Lokam";
+
+      if (d.accent) {
+        root.style.setProperty("--accent", d.accent);
+      }
+      if (d.bg && root.getAttribute("data-theme") !== "dark") {
+        root.style.setProperty("--bg", d.bg);
+      } else if (root.getAttribute("data-theme") === "dark") {
+        root.style.removeProperty("--bg");
+      }
+      root.style.setProperty("--font-scale", String(d.font_scale || 1));
+      root.style.setProperty("--container-max", d.max_width || "860px");
+
+      const isEditing = document.body.classList.contains("editing");
+      document.getElementById("hero-section").style.display = (d.show_hero !== false || isEditing) ? "block" : "none";
+      document.body.classList.toggle("hide-excerpts", d.show_excerpts === false && !isEditing);
+    }
+
+    window.applyPreset = function(presetName) {
+      ensureCustomDesign();
+      const presets = {
+        parchment: { accent: "#9a3b1b", bg: "#f7f1e5", theme: "sepia" },
+        terracotta: { accent: "#8c2f1b", bg: "#f8ede6", theme: "sepia" },
+        palm: { accent: "#2f6b4f", bg: "#eff5f0", theme: "sepia" },
+        night: { accent: "#e59d5c", bg: "#111215", theme: "dark" }
+      };
+      const p = presets[presetName];
+      if (!p) return;
+      appConfig.design.accent = p.accent;
+      appConfig.design.bg = p.bg;
+      root.setAttribute("data-theme", p.theme);
+      localStorage.setItem("theme", p.theme);
+      themeBtn.textContent = p.theme === "dark" ? "Sepia Mode" : "Dark Mode";
+      syncCustomizerInputs();
+      applyDesignToPage();
+    };
+
+    function syncCustomizerInputs() {
+      ensureCustomDesign();
+      const d = appConfig.design;
+      document.getElementById("cust-site-title").value = appConfig.site_title || "Akshara Lokam";
+      document.getElementById("cust-eyebrow").value = d.eyebrow || "Daily Telugu Serial Fiction";
+      document.getElementById("cust-footer-text").value = d.footer_text || "© Akshara Lokam";
+      document.getElementById("cust-accent").value = d.accent || "#9a3b1b";
+      document.getElementById("cust-bg").value = d.bg || "#f7f1e5";
+      document.getElementById("cust-font-scale").value = String(d.font_scale || 1);
+      document.getElementById("cust-max-width").value = d.max_width || "860px";
+      document.getElementById("cust-show-hero").checked = d.show_hero !== false;
+      document.getElementById("cust-show-excerpts").checked = d.show_excerpts !== false;
+    }
+
+    ["cust-site-title", "cust-eyebrow", "cust-footer-text", "cust-accent", "cust-bg", "cust-font-scale", "cust-max-width", "cust-show-hero", "cust-show-excerpts"].forEach(id => {
+      document.getElementById(id).addEventListener("input", () => {
+        ensureCustomDesign();
+        appConfig.site_title = document.getElementById("cust-site-title").value;
+        appConfig.design.eyebrow = document.getElementById("cust-eyebrow").value;
+        appConfig.design.footer_text = document.getElementById("cust-footer-text").value;
+        appConfig.design.accent = document.getElementById("cust-accent").value;
+        appConfig.design.bg = document.getElementById("cust-bg").value;
+        appConfig.design.font_scale = parseFloat(document.getElementById("cust-font-scale").value || "1");
+        appConfig.design.max_width = document.getElementById("cust-max-width").value;
+        appConfig.design.show_hero = document.getElementById("cust-show-hero").checked;
+        appConfig.design.show_excerpts = document.getElementById("cust-show-excerpts").checked;
+        applyDesignToPage();
+      });
+    });
 
     function setEditMode(enabled) {
       document.body.classList.toggle("editing", enabled);
       editBtn.textContent = enabled ? "Exit Edit Mode" : "Edit Mode";
       editBtn.classList.toggle("btn-primary", enabled);
-      document.getElementById("open-new-chapter-btn").style.display = enabled ? "inline-flex" : "none";
+      applyDesignToPage();
       renderAll();
     }
 
@@ -613,7 +814,6 @@
         return;
       }
 
-      // Display newest first while keeping original index for editing
       const indexed = activeSeries.chapters.map((ch, idx) => ({ ch, idx })).reverse();
       listEl.innerHTML = indexed.map(({ ch, idx }) => `
         <article class="chapter-card">
@@ -638,7 +838,6 @@
       renderChapters();
     }
 
-    // Chapter Modal Handlers
     const modal = document.getElementById("chapter-modal");
 
     document.getElementById("open-new-chapter-btn").addEventListener("click", () => {
@@ -706,11 +905,11 @@
       renderChapters();
     });
 
-    // Download JSON fallback
     document.getElementById("download-json-btn").addEventListener("click", () => {
       [
-        { name: "stories.json", data: appStories },
-        { name: "series_state.json", data: appState }
+        { name: "story_config.json", data: appConfig },
+        { name: "series_state.json", data: appState },
+        { name: "stories.json", data: appStories }
       ].forEach(file => {
         const blob = new Blob([JSON.stringify(file.data, null, 2)], { type: "application/json" });
         const a = document.createElement("a");
@@ -720,7 +919,6 @@
       });
     });
 
-    // Direct GitHub API Commit
     async function commitFileToGitHub(repo, branch, token, path, contentObj, message) {
       const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`;
       const headers = {
@@ -762,17 +960,18 @@
 
       if (!token) {
         statusEl.style.color = "var(--danger)";
-        statusEl.textContent = "Please paste your GitHub Personal Access Token (or use Download JSON Files).";
+        statusEl.textContent = "Please paste your GitHub Token under 'GitHub Connection' (or click Download JSON Files).";
         return;
       }
 
       try {
         statusEl.style.color = "var(--accent)";
-        statusEl.textContent = "Publishing changes to GitHub...";
-        await commitFileToGitHub(repo, branch, token, "series_state.json", appState, "Update series_state.json via Studio Edit Mode");
-        await commitFileToGitHub(repo, branch, token, "stories.json", appStories, "Update stories.json via Studio Edit Mode");
+        statusEl.textContent = "Publishing customizer & story changes to GitHub...";
+        await commitFileToGitHub(repo, branch, token, "story_config.json", appConfig, "Update design settings via Akshara Lokam Studio");
+        await commitFileToGitHub(repo, branch, token, "series_state.json", appState, "Update series_state.json via Akshara Lokam Studio");
+        await commitFileToGitHub(repo, branch, token, "stories.json", appStories, "Update stories.json via Akshara Lokam Studio");
         statusEl.style.color = "var(--success)";
-        statusEl.textContent = "Saved to GitHub! GitHub Pages will refresh in ~30–60 seconds.";
+        statusEl.textContent = "Saved to GitHub! GitHub Pages will update in ~30–60 seconds.";
       } catch (err) {
         statusEl.style.color = "var(--danger)";
         statusEl.textContent = err.message;
@@ -787,14 +986,13 @@
           fetch("series_state.json" + cacheBust),
           fetch("stories.json" + cacheBust)
         ]);
-        const config = configRes.ok ? await configRes.json() : {};
+        appConfig = configRes.ok ? await configRes.json() : {};
         appState = stateRes.ok ? await stateRes.json() : {};
         appStories = storiesRes.ok ? await storiesRes.json() : { series: [] };
 
-        if (config.site_title) {
-          document.title = `${config.site_title} — అక్షర లోకం`;
-          document.getElementById("site-title").textContent = config.site_title;
-        }
+        ensureCustomDesign();
+        applyDesignToPage();
+        syncCustomizerInputs();
         syncInputsFromState();
         renderAll();
 
