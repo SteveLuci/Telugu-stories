@@ -20,8 +20,15 @@
       --success: #166534;
       --border: rgba(110, 72, 42, 0.16);
       --shadow: 0 10px 30px rgba(45, 26, 10, 0.06);
-      --container-max: 860px;
+      --container-max: 1020px;
       --font-scale: 1;
+
+      /* Customizable Genre Sidebar Variables */
+      --genre-sidebar-w: 210px;
+      --genre-btn-fs: 0.86rem;
+      --genre-btn-py: 0.52rem;
+      --genre-btn-px: 0.85rem;
+      --genre-btn-radius: 10px;
     }
 
     [data-theme="dark"] {
@@ -96,7 +103,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 0.5rem 1.1rem;
-      margin: 1.15rem 0 1rem;
+      margin: 1.15rem 0 1.5rem;
     }
 
     .nav-group a {
@@ -114,52 +121,100 @@
       border-bottom-color: var(--accent);
     }
 
-    /* Category Ribbon: Bedtime & Child Stories on the left, then Suspense, Thriller, Romance, etc. */
-    .category-ribbon {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding: 0.65rem 0.75rem;
-      margin-bottom: 1.5rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      scrollbar-width: thin;
+    /* Main Content + Left Genre Sidebar Layout */
+    .workspace-layout {
+      display: grid;
+      grid-template-columns: var(--genre-sidebar-w) minmax(0, 1fr);
+      gap: 1.5rem;
+      align-items: start;
     }
 
-    .ribbon-btn {
-      flex: 0 0 auto;
+    body.no-genre-sidebar .workspace-layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    body.no-genre-sidebar .genre-sidebar {
+      display: none;
+    }
+
+    .genre-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1rem 0.85rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 1.25rem;
+    }
+
+    .genre-sidebar-heading {
+      font-family: "Plus Jakarta Sans", "Noto Sans Telugu", sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin: 0 0 0.65rem 0.25rem;
+    }
+
+    .genre-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.42rem;
+    }
+
+    .genre-btn {
+      width: 100%;
+      text-align: left;
       background: var(--surface-alt);
       color: var(--text);
       border: 1px solid var(--border);
-      padding: 0.38rem 0.85rem;
-      border-radius: 999px;
+      padding: var(--genre-btn-py) var(--genre-btn-px);
+      border-radius: var(--genre-btn-radius);
       font-family: "Plus Jakarta Sans", "Noto Sans Telugu", sans-serif;
-      font-size: 0.84rem;
+      font-size: var(--genre-btn-fs);
       font-weight: 600;
+      line-height: 1.35;
       cursor: pointer;
       transition: all 0.15s ease;
     }
 
-    .ribbon-btn:hover {
+    .genre-btn:hover {
       border-color: var(--accent);
       color: var(--accent);
+      transform: translateX(2px);
     }
 
-    .ribbon-btn.active {
+    .genre-btn.active {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
     }
-    [data-theme="dark"] .ribbon-btn.active { color: #111215; }
+    [data-theme="dark"] .genre-btn.active { color: #111215; }
 
-    .ribbon-divider {
-      flex: 0 0 1px;
-      height: 22px;
+    .genre-divider {
+      height: 1px;
       background: var(--border);
-      margin: 0 0.15rem;
+      margin: 0.35rem 0;
+    }
+
+    @media (max-width: 760px) {
+      .workspace-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .genre-sidebar {
+        position: static;
+      }
+      .genre-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .genre-btn {
+        width: auto;
+      }
+      .genre-divider {
+        width: 100%;
+        height: 1px;
+      }
     }
 
     .btn {
@@ -224,7 +279,7 @@
 
     .studio-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 0.85rem;
       margin-bottom: 0.9rem;
     }
@@ -473,19 +528,6 @@
       <a href="privacy.html">Privacy Policy</a>
     </nav>
 
-    <!-- Category Ribbon: Bedtime Stories & Child Stories on the left, then Suspense, Thriller, Romance, etc. -->
-    <div id="category-ribbon" class="category-ribbon" role="navigation" aria-label="Story Categories">
-      <button class="ribbon-btn" data-cat="Bedtime Stories" type="button">Bedtime Stories</button>
-      <button class="ribbon-btn" data-cat="Child Stories" type="button">Child Stories</button>
-      <span class="ribbon-divider" aria-hidden="true"></span>
-      <button class="ribbon-btn active" data-cat="All" type="button">All Stories</button>
-      <button class="ribbon-btn" data-cat="Suspense" type="button">Suspense</button>
-      <button class="ribbon-btn" data-cat="Thriller" type="button">Thriller</button>
-      <button class="ribbon-btn" data-cat="Romance" type="button">Romance</button>
-      <button class="ribbon-btn" data-cat="Drama" type="button">Drama</button>
-      <button class="ribbon-btn" data-cat="Mystery" type="button">Mystery</button>
-    </div>
-
     <!-- WordPress-Style Studio & Customizer Panel -->
     <section class="studio-panel" aria-label="WordPress Style Customizer and Editor">
       <div class="studio-header">
@@ -498,7 +540,7 @@
 
       <div class="tab-row" role="tablist">
         <button class="btn btn-sm btn-primary" data-tab="tab-content" type="button">Story &amp; Series</button>
-        <button class="btn btn-sm" data-tab="tab-customize" type="button">Customize Design (WP Style)</button>
+        <button class="btn btn-sm" data-tab="tab-customize" type="button">Customize Design &amp; Genres</button>
         <button class="btn btn-sm" data-tab="tab-publish" type="button">GitHub Connection</button>
       </div>
 
@@ -567,14 +609,62 @@
           <label class="field">
             Page Width
             <select id="cust-max-width">
-              <option value="740px">Narrow Reader (740px)</option>
-              <option value="860px">Editorial (860px)</option>
-              <option value="1000px">Wide (1000px)</option>
+              <option value="860px">Medium (860px)</option>
+              <option value="1020px">Editorial Wide (1020px)</option>
+              <option value="1160px">Full Wide (1160px)</option>
             </select>
           </label>
         </div>
 
+        <div class="section-label" style="margin-top:1rem;">Left Genre Section Controls</div>
+        <div class="studio-grid">
+          <label class="field">
+            Genre Sidebar Width
+            <select id="cust-genre-width">
+              <option value="175px">Slim (175px)</option>
+              <option value="210px">Standard (210px)</option>
+              <option value="255px">Wide (255px)</option>
+            </select>
+          </label>
+          <label class="field">
+            Genre Button Font Size
+            <select id="cust-genre-fs">
+              <option value="0.78rem">Small (0.78rem)</option>
+              <option value="0.86rem">Medium (0.86rem)</option>
+              <option value="0.96rem">Large (0.96rem)</option>
+              <option value="1.05rem">Extra Large (1.05rem)</option>
+            </select>
+          </label>
+          <label class="field">
+            Genre Button Size / Spacing
+            <select id="cust-genre-pad">
+              <option value="0.35rem 0.65rem">Compact</option>
+              <option value="0.52rem 0.85rem">Comfortable</option>
+              <option value="0.72rem 1rem">Spacious</option>
+            </select>
+          </label>
+          <label class="field">
+            Genre Button Corners
+            <select id="cust-genre-radius">
+              <option value="6px">Sharp (6px)</option>
+              <option value="10px">Rounded (10px)</option>
+              <option value="999px">Pill (999px)</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="studio-grid" style="align-items:end;">
+          <label class="field">
+            Add Custom Genre
+            <input id="new-genre-name" type="text" placeholder="e.g. Horror / Comedy / Mythology" />
+          </label>
+          <div>
+            <button id="add-genre-btn" class="btn btn-sm" type="button">+ Add Genre</button>
+          </div>
+        </div>
+
         <div class="toggle-row">
+          <label><input id="cust-show-genres" type="checkbox" checked /> Show Left Genre Section</label>
           <label><input id="cust-show-hero" type="checkbox" checked /> Show Series &amp; Characters Card</label>
           <label><input id="cust-show-excerpts" type="checkbox" checked /> Show Chapter Excerpts</label>
         </div>
@@ -602,28 +692,38 @@
 
     <div id="ad-slot-top"></div>
 
-    <section id="hero-section" class="hero-card" aria-live="polite">
-      <div id="series-badge" class="series-pill">Series 1</div>
-      <h2 id="series-title" class="series-heading">Loading series...</h2>
-      <p id="series-location" class="series-location"></p>
-      <div id="character-list" class="char-chips"></div>
+    <!-- Left Genre Sidebar + Main Story Column -->
+    <div class="workspace-layout">
+      <aside id="genre-sidebar" class="genre-sidebar" aria-label="Story Genres">
+        <h2 class="genre-sidebar-heading">Genres</h2>
+        <div id="genre-list" class="genre-list"></div>
+      </aside>
 
-      <div class="edit-only" style="margin-top:1rem; padding-top:0.9rem; border-top:1px dashed var(--border);">
-        <div class="studio-grid" style="margin-bottom:0.5rem;">
-          <input id="new-char-te" type="text" placeholder="Telugu Name (ఉదా: కావ్య)" />
-          <input id="new-char-en" type="text" placeholder="English Name (e.g. Kavya)" />
-          <input id="new-char-role" type="text" placeholder="Role (e.g. Classical singer)" />
+      <div class="main-column">
+        <section id="hero-section" class="hero-card" aria-live="polite">
+          <div id="series-badge" class="series-pill">Series 1</div>
+          <h2 id="series-title" class="series-heading">Loading series...</h2>
+          <p id="series-location" class="series-location"></p>
+          <div id="character-list" class="char-chips"></div>
+
+          <div class="edit-only" style="margin-top:1rem; padding-top:0.9rem; border-top:1px dashed var(--border);">
+            <div class="studio-grid" style="margin-bottom:0.5rem;">
+              <input id="new-char-te" type="text" placeholder="Telugu Name (ఉదా: కావ్య)" />
+              <input id="new-char-en" type="text" placeholder="English Name (e.g. Kavya)" />
+              <input id="new-char-role" type="text" placeholder="Role (e.g. Classical singer)" />
+            </div>
+            <button id="add-char-btn" class="btn btn-sm" type="button">+ Add Character</button>
+          </div>
+        </section>
+
+        <div class="section-head">
+          <div id="section-label" class="section-label">Published Chapters</div>
+          <button id="open-new-chapter-btn" class="btn btn-primary btn-sm edit-only" type="button">+ Add Chapter</button>
         </div>
-        <button id="add-char-btn" class="btn btn-sm" type="button">+ Add Character</button>
+
+        <main id="chapter-list"></main>
       </div>
-    </section>
-
-    <div class="section-head">
-      <div id="section-label" class="section-label">Published Chapters</div>
-      <button id="open-new-chapter-btn" class="btn btn-primary btn-sm edit-only" type="button">+ Add Chapter</button>
     </div>
-
-    <main id="chapter-list"></main>
 
     <footer>
       <span id="footer-copy">&copy; Akshara Lokam</span>
@@ -645,16 +745,8 @@
           <input id="m-ch-num" type="number" min="1" />
         </label>
         <label class="field">
-          Category
-          <select id="m-ch-cat">
-            <option value="Bedtime Stories">Bedtime Stories</option>
-            <option value="Child Stories">Child Stories</option>
-            <option value="Suspense">Suspense</option>
-            <option value="Thriller">Thriller</option>
-            <option value="Romance">Romance</option>
-            <option value="Drama">Drama</option>
-            <option value="Mystery">Mystery</option>
-          </select>
+          Genre / Category
+          <select id="m-ch-cat"></select>
         </label>
       </div>
       <label class="field" style="margin-bottom:0.85rem;">
@@ -691,31 +783,18 @@
       themeBtn.textContent = next === "dark" ? "Sepia Mode" : "Dark Mode";
     });
 
+    const DEFAULT_PRIORITY_GENRES = ["Bedtime Stories", "Child Stories"];
+    const DEFAULT_OTHER_GENRES = ["All Stories", "Suspense", "Thriller", "Romance", "Drama", "Mystery"];
+
     let appConfig = {};
     let appState = {};
     let appStories = { series: [] };
     let editingChapterIndex = null;
-    let selectedCategory = "All";
+    let selectedCategory = "All Stories";
 
     document.getElementById("gh-repo").value = localStorage.getItem("ak_gh_repo") || "SteveLuci/Telugu-stories";
     document.getElementById("gh-branch").value = localStorage.getItem("ak_gh_branch") || "main";
     document.getElementById("gh-token").value = localStorage.getItem("ak_gh_token") || "";
-
-    // Category ribbon selection
-    document.querySelectorAll(".ribbon-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        selectedCategory = btn.dataset.cat;
-        document.querySelectorAll(".ribbon-btn").forEach(b => b.classList.toggle("active", b === btn));
-        const url = new URL(window.location.href);
-        if (selectedCategory === "All") {
-          url.searchParams.delete("category");
-        } else {
-          url.searchParams.set("category", selectedCategory);
-        }
-        window.history.replaceState({}, "", url);
-        renderChapters();
-      });
-    });
 
     document.querySelectorAll("[data-tab]").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -733,10 +812,21 @@
         accent: "#9a3b1b",
         bg: "#f7f1e5",
         font_scale: 1,
-        max_width: "860px",
+        max_width: "1020px",
+        show_genres: true,
         show_hero: true,
-        show_excerpts: true
+        show_excerpts: true,
+        genre_width: "210px",
+        genre_font_size: "0.86rem",
+        genre_padding: "0.52rem 0.85rem",
+        genre_radius: "10px"
       };
+      if (!Array.isArray(appConfig.priority_genres) || !appConfig.priority_genres.length) {
+        appConfig.priority_genres = [...DEFAULT_PRIORITY_GENRES];
+      }
+      if (!Array.isArray(appConfig.genres) || !appConfig.genres.length) {
+        appConfig.genres = [...DEFAULT_OTHER_GENRES];
+      }
     }
 
     function applyDesignToPage() {
@@ -755,12 +845,69 @@
         root.style.removeProperty("--bg");
       }
       root.style.setProperty("--font-scale", String(d.font_scale || 1));
-      root.style.setProperty("--container-max", d.max_width || "860px");
+      root.style.setProperty("--container-max", d.max_width || "1020px");
+      root.style.setProperty("--genre-sidebar-w", d.genre_width || "210px");
+      root.style.setProperty("--genre-btn-fs", d.genre_font_size || "0.86rem");
+      const padParts = (d.genre_padding || "0.52rem 0.85rem").split(" ");
+      root.style.setProperty("--genre-btn-py", padParts[0] || "0.52rem");
+      root.style.setProperty("--genre-btn-px", padParts[1] || "0.85rem");
+      root.style.setProperty("--genre-btn-radius", d.genre_radius || "10px");
 
       const isEditing = document.body.classList.contains("editing");
+      document.body.classList.toggle("no-genre-sidebar", d.show_genres === false && !isEditing);
       document.getElementById("hero-section").style.display = (d.show_hero !== false || isEditing) ? "block" : "none";
       document.body.classList.toggle("hide-excerpts", d.show_excerpts === false && !isEditing);
     }
+
+    function renderGenreSidebarAndModalOptions() {
+      ensureCustomDesign();
+      const genreListEl = document.getElementById("genre-list");
+      const priority = appConfig.priority_genres;
+      const others = appConfig.genres;
+
+      const makeBtn = (label) => {
+        const active = selectedCategory === label ? "active" : "";
+        return `<button class="genre-btn ${active}" data-cat="${label.replace(/"/g, "&quot;")}" type="button">${label}</button>`;
+      };
+
+      genreListEl.innerHTML =
+        priority.map(makeBtn).join("") +
+        `<div class="genre-divider" aria-hidden="true"></div>` +
+        others.map(makeBtn).join("");
+
+      genreListEl.querySelectorAll(".genre-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedCategory = btn.dataset.cat;
+          renderGenreSidebarAndModalOptions();
+          const url = new URL(window.location.href);
+          if (selectedCategory === "All Stories" || selectedCategory === "All") {
+            url.searchParams.delete("category");
+          } else {
+            url.searchParams.set("category", selectedCategory);
+          }
+          window.history.replaceState({}, "", url);
+          renderChapters();
+        });
+      });
+
+      const selectableGenres = [...priority, ...others.filter(g => g !== "All Stories" && g !== "All")];
+      const modalCatSelect = document.getElementById("m-ch-cat");
+      modalCatSelect.innerHTML = selectableGenres
+        .map(g => `<option value="${g.replace(/"/g, "&quot;")}">${g}</option>`)
+        .join("");
+    }
+
+    document.getElementById("add-genre-btn").addEventListener("click", () => {
+      const input = document.getElementById("new-genre-name");
+      const name = input.value.trim();
+      if (!name) return;
+      ensureCustomDesign();
+      if (!appConfig.genres.includes(name) && !appConfig.priority_genres.includes(name)) {
+        appConfig.genres.push(name);
+      }
+      input.value = "";
+      renderGenreSidebarAndModalOptions();
+    });
 
     window.applyPreset = function(presetName) {
       ensureCustomDesign();
@@ -790,12 +937,22 @@
       document.getElementById("cust-accent").value = d.accent || "#9a3b1b";
       document.getElementById("cust-bg").value = d.bg || "#f7f1e5";
       document.getElementById("cust-font-scale").value = String(d.font_scale || 1);
-      document.getElementById("cust-max-width").value = d.max_width || "860px";
+      document.getElementById("cust-max-width").value = d.max_width || "1020px";
+      document.getElementById("cust-genre-width").value = d.genre_width || "210px";
+      document.getElementById("cust-genre-fs").value = d.genre_font_size || "0.86rem";
+      document.getElementById("cust-genre-pad").value = d.genre_padding || "0.52rem 0.85rem";
+      document.getElementById("cust-genre-radius").value = d.genre_radius || "10px";
+      document.getElementById("cust-show-genres").checked = d.show_genres !== false;
       document.getElementById("cust-show-hero").checked = d.show_hero !== false;
       document.getElementById("cust-show-excerpts").checked = d.show_excerpts !== false;
     }
 
-    ["cust-site-title", "cust-eyebrow", "cust-footer-text", "cust-accent", "cust-bg", "cust-font-scale", "cust-max-width", "cust-show-hero", "cust-show-excerpts"].forEach(id => {
+    [
+      "cust-site-title", "cust-eyebrow", "cust-footer-text", "cust-accent", "cust-bg",
+      "cust-font-scale", "cust-max-width", "cust-genre-width", "cust-genre-fs",
+      "cust-genre-pad", "cust-genre-radius", "cust-show-genres", "cust-show-hero",
+      "cust-show-excerpts"
+    ].forEach(id => {
       document.getElementById(id).addEventListener("input", () => {
         ensureCustomDesign();
         appConfig.site_title = document.getElementById("cust-site-title").value;
@@ -805,6 +962,11 @@
         appConfig.design.bg = document.getElementById("cust-bg").value;
         appConfig.design.font_scale = parseFloat(document.getElementById("cust-font-scale").value || "1");
         appConfig.design.max_width = document.getElementById("cust-max-width").value;
+        appConfig.design.genre_width = document.getElementById("cust-genre-width").value;
+        appConfig.design.genre_font_size = document.getElementById("cust-genre-fs").value;
+        appConfig.design.genre_padding = document.getElementById("cust-genre-pad").value;
+        appConfig.design.genre_radius = document.getElementById("cust-genre-radius").value;
+        appConfig.design.show_genres = document.getElementById("cust-show-genres").checked;
         appConfig.design.show_hero = document.getElementById("cust-show-hero").checked;
         appConfig.design.show_excerpts = document.getElementById("cust-show-excerpts").checked;
         applyDesignToPage();
@@ -907,13 +1069,12 @@
       const listEl = document.getElementById("chapter-list");
       const labelEl = document.getElementById("section-label");
 
-      labelEl.textContent = selectedCategory === "All"
-        ? "Published Chapters"
-        : `${selectedCategory} Stories`;
+      const showAll = selectedCategory === "All Stories" || selectedCategory === "All";
+      labelEl.textContent = showAll ? "Published Chapters" : `${selectedCategory} Stories`;
 
       const indexed = activeSeries.chapters
         .map((ch, idx) => ({ ch, idx }))
-        .filter(({ ch }) => selectedCategory === "All" || (ch.category || "Drama") === selectedCategory)
+        .filter(({ ch }) => showAll || (ch.category || "Drama") === selectedCategory)
         .reverse();
 
       if (!indexed.length) {
@@ -946,6 +1107,7 @@
     }
 
     function renderAll() {
+      renderGenreSidebarAndModalOptions();
       renderHero();
       renderChapters();
     }
@@ -957,7 +1119,8 @@
       editingChapterIndex = null;
       document.getElementById("modal-heading").textContent = "Add New Chapter";
       document.getElementById("m-ch-num").value = activeSeries.chapters.length + 1;
-      document.getElementById("m-ch-cat").value = selectedCategory === "All" ? "Drama" : selectedCategory;
+      const defaultCat = (selectedCategory === "All Stories" || selectedCategory === "All") ? "Drama" : selectedCategory;
+      document.getElementById("m-ch-cat").value = defaultCat;
       document.getElementById("m-ch-title").value = "";
       document.getElementById("m-ch-excerpt").value = "";
       document.getElementById("m-ch-body").value = "";
@@ -1082,8 +1245,8 @@
 
       try {
         statusEl.style.color = "var(--accent)";
-        statusEl.textContent = "Publishing customizer & story changes to GitHub...";
-        await commitFileToGitHub(repo, branch, token, "story_config.json", appConfig, "Update design settings via Akshara Lokam Studio");
+        statusEl.textContent = "Publishing customizer, genre & story changes to GitHub...";
+        await commitFileToGitHub(repo, branch, token, "story_config.json", appConfig, "Update design & genre settings via Akshara Lokam Studio");
         await commitFileToGitHub(repo, branch, token, "series_state.json", appState, "Update series_state.json via Akshara Lokam Studio");
         await commitFileToGitHub(repo, branch, token, "stories.json", appStories, "Update stories.json via Akshara Lokam Studio");
         statusEl.style.color = "var(--success)";
@@ -1099,9 +1262,6 @@
         const urlCat = new URLSearchParams(window.location.search).get("category");
         if (urlCat) {
           selectedCategory = urlCat;
-          document.querySelectorAll(".ribbon-btn").forEach(b => {
-            b.classList.toggle("active", b.dataset.cat === selectedCategory);
-          });
         }
 
         const cacheBust = `?t=${Date.now()}`;
