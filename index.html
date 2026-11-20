@@ -18,6 +18,8 @@
       --muted: #685848;
       --accent: #9a3b1b;
       --accent-soft: rgba(154, 59, 27, 0.1);
+      --danger: #b42318;
+      --success: #166534;
       --border: rgba(110, 72, 42, 0.16);
       --shadow: 0 10px 30px rgba(45, 26, 10, 0.06);
     }
@@ -32,13 +34,13 @@
       --muted: #a69f93;
       --accent: #e59d5c;
       --accent-soft: rgba(229, 157, 92, 0.14);
+      --danger: #f97066;
+      --success: #4ade80;
       --border: rgba(255, 255, 255, 0.1);
       --shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -52,7 +54,7 @@
     }
 
     .wrap {
-      max-width: 840px;
+      max-width: 860px;
       margin: 0 auto;
       padding: 2rem 1.25rem 4rem;
     }
@@ -85,6 +87,12 @@
       font-weight: 700;
     }
 
+    .header-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
     .nav-group {
       display: flex;
       flex-wrap: wrap;
@@ -101,32 +109,97 @@
       font-weight: 600;
       padding: 0.25rem 0;
       border-bottom: 2px solid transparent;
-      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
-    .nav-group a:hover,
-    .nav-group a.active {
+    .nav-group a:hover, .nav-group a.active {
       color: var(--accent);
       border-bottom-color: var(--accent);
     }
 
-    .theme-btn {
+    .btn {
       background: var(--surface);
       color: var(--text);
       border: 1px solid var(--border);
-      padding: 0.5rem 0.95rem;
+      padding: 0.48rem 0.95rem;
       border-radius: 999px;
-      font-family: "Plus Jakarta Sans", sans-serif;
+      font-family: "Plus Jakarta Sans", "Noto Sans Telugu", sans-serif;
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
       box-shadow: var(--shadow);
-      transition: transform 0.15s ease, border-color 0.2s ease;
+      transition: transform 0.15s ease, border-color 0.2s ease, background 0.2s ease;
     }
 
-    .theme-btn:hover {
-      transform: translateY(-1px);
-      border-color: var(--accent);
+    .btn:hover { transform: translateY(-1px); border-color: var(--accent); }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    [data-theme="dark"] .btn-primary { color: #111215; }
+    .btn-danger { color: var(--danger); border-color: var(--danger); }
+    .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; border-radius: 8px; }
+
+    /* Admin / Edit Studio Bar */
+    .studio-panel {
+      display: none;
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 1.35rem 1.5rem;
+      margin-bottom: 1.75rem;
+      box-shadow: var(--shadow);
+    }
+    body.editing .studio-panel { display: block; }
+
+    .studio-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .studio-title {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    label.field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-family: "Plus Jakarta Sans", "Noto Sans Telugu", sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      font-family: "Noto Sans Telugu", "Plus Jakarta Sans", sans-serif;
+      font-size: 0.92rem;
+    }
+
+    textarea { min-height: 110px; line-height: 1.7; resize: vertical; }
+
+    .status-msg {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      margin-top: 0.65rem;
     }
 
     .hero-card {
@@ -151,33 +224,37 @@
       margin-bottom: 0.75rem;
     }
 
-    .series-heading {
-      margin: 0 0 0.4rem;
-      font-size: clamp(1.3rem, 3vw, 1.7rem);
-      font-weight: 700;
-      line-height: 1.4;
-    }
+    .series-heading { margin: 0 0 0.4rem; font-size: clamp(1.3rem, 3vw, 1.7rem); font-weight: 700; }
+    .series-location { color: var(--muted); font-size: 0.95rem; margin: 0 0 0.85rem; }
 
-    .series-location {
-      color: var(--muted);
-      font-size: 0.95rem;
-      margin: 0 0 1rem;
-    }
-
-    .char-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-    }
-
+    .char-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
     .char-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
       background: var(--surface-alt);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 0.35rem 0.7rem;
       font-size: 0.85rem;
-      color: var(--text);
+    }
+
+    .chip-remove {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 0.2rem;
+    }
+    body.editing .chip-remove { display: inline; }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.9rem;
     }
 
     .section-label {
@@ -187,26 +264,18 @@
       text-transform: uppercase;
       color: var(--muted);
       font-weight: 700;
-      margin-bottom: 0.9rem;
     }
 
     .chapter-card {
-      display: block;
-      text-decoration: none;
-      color: inherit;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 1.35rem 1.5rem;
       margin-bottom: 1rem;
       box-shadow: var(--shadow);
-      transition: transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.18s ease, border-color 0.2s ease;
     }
-
-    .chapter-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-    }
+    .chapter-card:hover { border-color: var(--accent); }
 
     .chapter-top {
       display: flex;
@@ -226,33 +295,49 @@
       border-radius: 6px;
     }
 
-    .read-link {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--accent);
+    .chapter-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
 
-    .chapter-title {
-      margin: 0.25rem 0 0.5rem;
-      font-size: 1.22rem;
-      font-weight: 700;
-      line-height: 1.5;
-    }
+    .chapter-title { margin: 0.25rem 0 0.5rem; font-size: 1.22rem; font-weight: 700; }
+    .chapter-excerpt { margin: 0; color: var(--muted); font-size: 0.98rem; }
 
-    .chapter-excerpt {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.98rem;
+    .edit-controls {
+      display: none;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px dashed var(--border);
     }
+    body.editing .edit-controls { display: flex; flex-wrap: wrap; }
 
-    .empty-state {
+    .edit-only { display: none; }
+    body.editing .edit-only { display: block; }
+    body.editing .edit-only-inline { display: inline-flex; }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
       background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: 14px;
-      padding: 2rem;
-      text-align: center;
-      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
     }
 
     footer {
@@ -267,17 +352,8 @@
       font-size: 0.9rem;
       color: var(--muted);
     }
-
-    footer a {
-      color: var(--muted);
-      text-decoration: none;
-      margin-left: 1rem;
-      font-weight: 600;
-    }
-
-    footer a:hover {
-      color: var(--accent);
-    }
+    footer a { color: var(--muted); text-decoration: none; margin-left: 1rem; font-weight: 600; }
+    footer a:hover { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -287,7 +363,10 @@
         <div class="brand-eyebrow">Daily Telugu Serial Fiction</div>
         <h1 id="site-title" class="site-title">Akshara Lokam</h1>
       </div>
-      <button id="theme-toggle" class="theme-btn" type="button">Dark Mode</button>
+      <div class="header-actions">
+        <button id="edit-toggle" class="btn" type="button">Edit Mode</button>
+        <button id="theme-toggle" class="btn" type="button">Dark Mode</button>
+      </div>
     </div>
 
     <nav class="nav-group" aria-label="Main navigation">
@@ -297,7 +376,54 @@
       <a href="privacy.html">Privacy Policy</a>
     </nav>
 
-    <!-- AdSense responsive slot placeholder -->
+    <!-- Studio Edit Bar (visible only in Edit Mode) -->
+    <section class="studio-panel" aria-label="Site Editor">
+      <div class="studio-header">
+        <h2 class="studio-title">Studio Edit Mode — Add, Edit, or Remove Content</h2>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <button id="download-json-btn" class="btn btn-sm" type="button">Download JSON Files</button>
+          <button id="publish-github-btn" class="btn btn-primary btn-sm" type="button">Save &amp; Publish to GitHub</button>
+        </div>
+      </div>
+
+      <div class="studio-grid">
+        <label class="field">
+          GitHub Repo (owner/repo)
+          <input id="gh-repo" type="text" value="SteveLuci/Telugu-stories" />
+        </label>
+        <label class="field">
+          Branch
+          <input id="gh-branch" type="text" value="main" />
+        </label>
+        <label class="field">
+          GitHub Token (stored only in your browser)
+          <input id="gh-token" type="password" placeholder="github_pat_..." />
+        </label>
+      </div>
+
+      <div class="studio-grid">
+        <label class="field">
+          Series Title
+          <input id="edit-series-title" type="text" />
+        </label>
+        <label class="field">
+          City / Town
+          <input id="edit-city" type="text" />
+        </label>
+        <label class="field">
+          State
+          <input id="edit-state" type="text" />
+        </label>
+      </div>
+
+      <label class="field">
+        Plot Memory (guides next AI chapter)
+        <textarea id="edit-plot-memory" style="min-height:70px;"></textarea>
+      </label>
+
+      <div id="studio-status" class="status-msg"></div>
+    </section>
+
     <div id="ad-slot-top"></div>
 
     <section class="hero-card" aria-live="polite">
@@ -305,9 +431,23 @@
       <h2 id="series-title" class="series-heading">Loading series...</h2>
       <p id="series-location" class="series-location"></p>
       <div id="character-list" class="char-chips"></div>
+
+      <!-- Add Character inline form in Edit Mode -->
+      <div class="edit-only" style="margin-top:1rem; padding-top:0.9rem; border-top:1px dashed var(--border);">
+        <div class="studio-grid" style="margin-bottom:0.5rem;">
+          <input id="new-char-te" type="text" placeholder="Telugu Name (ఉదా: కావ్య)" />
+          <input id="new-char-en" type="text" placeholder="English Name (e.g. Kavya)" />
+          <input id="new-char-role" type="text" placeholder="Role (e.g. Classical singer)" />
+        </div>
+        <button id="add-char-btn" class="btn btn-sm" type="button">+ Add Character</button>
+      </div>
     </section>
 
-    <div class="section-label">Published Chapters</div>
+    <div class="section-head">
+      <div class="section-label">Published Chapters</div>
+      <button id="open-new-chapter-btn" class="btn btn-primary btn-sm edit-only-inline" type="button" style="display:none;">+ Add Chapter</button>
+    </div>
+
     <main id="chapter-list"></main>
 
     <footer>
@@ -320,85 +460,353 @@
     </footer>
   </div>
 
+  <!-- Add / Edit Chapter Modal -->
+  <div id="chapter-modal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h3 id="modal-heading" style="margin-top:0;">Add / Edit Chapter</h3>
+      <div class="studio-grid">
+        <label class="field">
+          Chapter Number
+          <input id="m-ch-num" type="number" min="1" />
+        </label>
+        <label class="field">
+          Chapter Title (Telugu / English)
+          <input id="m-ch-title" type="text" />
+        </label>
+      </div>
+      <label class="field" style="margin-bottom:0.85rem;">
+        Short Excerpt (shown on home card)
+        <textarea id="m-ch-excerpt" style="min-height:65px;"></textarea>
+      </label>
+      <label class="field" style="margin-bottom:1rem;">
+        Chapter Story Paragraphs (separate each paragraph with a blank line)
+        <textarea id="m-ch-body" style="min-height:200px;"></textarea>
+      </label>
+      <div style="display:flex; justify-content:flex-end; gap:0.6rem;">
+        <button id="m-cancel" class="btn" type="button">Cancel</button>
+        <button id="m-save" class="btn btn-primary" type="button">Apply Changes</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const root = document.documentElement;
-    const toggleBtn = document.getElementById("theme-toggle");
+    const themeBtn = document.getElementById("theme-toggle");
+    const editBtn = document.getElementById("edit-toggle");
     const savedTheme = localStorage.getItem("theme") || "sepia";
     root.setAttribute("data-theme", savedTheme);
-    toggleBtn.textContent = savedTheme === "dark" ? "Sepia Mode" : "Dark Mode";
+    themeBtn.textContent = savedTheme === "dark" ? "Sepia Mode" : "Dark Mode";
 
-    toggleBtn.addEventListener("click", () => {
+    themeBtn.addEventListener("click", () => {
       const next = root.getAttribute("data-theme") === "dark" ? "sepia" : "dark";
       root.setAttribute("data-theme", next);
       localStorage.setItem("theme", next);
-      toggleBtn.textContent = next === "dark" ? "Sepia Mode" : "Dark Mode";
+      themeBtn.textContent = next === "dark" ? "Sepia Mode" : "Dark Mode";
     });
 
-    async function loadChapters() {
+    let appState = {};
+    let appStories = { series: [] };
+    let editingChapterIndex = null;
+
+    // Restore saved GitHub settings in browser
+    document.getElementById("gh-repo").value = localStorage.getItem("ak_gh_repo") || "SteveLuci/Telugu-stories";
+    document.getElementById("gh-branch").value = localStorage.getItem("ak_gh_branch") || "main";
+    document.getElementById("gh-token").value = localStorage.getItem("ak_gh_token") || "";
+
+    function setEditMode(enabled) {
+      document.body.classList.toggle("editing", enabled);
+      editBtn.textContent = enabled ? "Exit Edit Mode" : "Edit Mode";
+      editBtn.classList.toggle("btn-primary", enabled);
+      document.getElementById("open-new-chapter-btn").style.display = enabled ? "inline-flex" : "none";
+      renderAll();
+    }
+
+    editBtn.addEventListener("click", () => {
+      setEditMode(!document.body.classList.contains("editing"));
+    });
+
+    function getActiveSeries() {
+      const activeNum = appState.active_series_number || 1;
+      appStories.series = appStories.series || [];
+      let s = appStories.series.find(item => item.series_number === activeNum) || appStories.series[appStories.series.length - 1];
+      if (!s) {
+        s = {
+          series_number: activeNum,
+          series_title: appState.series_title || "Series 1",
+          state: appState.state || "",
+          city: appState.city || "",
+          chapters: []
+        };
+        appStories.series.push(s);
+      }
+      s.chapters = s.chapters || [];
+      return s;
+    }
+
+    function syncInputsFromState() {
+      document.getElementById("edit-series-title").value = appState.series_title || "";
+      document.getElementById("edit-city").value = appState.city || "";
+      document.getElementById("edit-state").value = appState.state || "";
+      document.getElementById("edit-plot-memory").value = appState.plot_memory || "";
+    }
+
+    ["edit-series-title", "edit-city", "edit-state", "edit-plot-memory"].forEach(id => {
+      document.getElementById(id).addEventListener("input", () => {
+        appState.series_title = document.getElementById("edit-series-title").value;
+        appState.city = document.getElementById("edit-city").value;
+        appState.state = document.getElementById("edit-state").value;
+        appState.plot_memory = document.getElementById("edit-plot-memory").value;
+        const activeSeries = getActiveSeries();
+        activeSeries.series_title = appState.series_title;
+        activeSeries.city = appState.city;
+        activeSeries.state = appState.state;
+        renderHero();
+      });
+    });
+
+    function renderHero() {
+      const activeSeriesNum = appState.active_series_number || 1;
+      document.getElementById("series-badge").textContent = `Series ${activeSeriesNum}`;
+      document.getElementById("series-title").textContent = appState.series_title || "Akshara Lokam";
+      const locParts = [appState.city, appState.state].filter(Boolean);
+      document.getElementById("series-location").textContent = locParts.length ? `Setting: ${locParts.join(", ")}` : "";
+
+      const charEl = document.getElementById("character-list");
+      const chars = Array.isArray(appState.characters) ? appState.characters : [];
+      charEl.innerHTML = chars.map((c, idx) => {
+        const label = c.name_te ? `${c.name_te} (${c.name_en || ""})` : (c.name || c.name_en || "");
+        const role = c.role ? ` · ${c.role}` : "";
+        return `
+          <span class="char-chip">
+            <span><strong>${label}</strong>${role}</span>
+            <button class="chip-remove" type="button" title="Remove character" onclick="removeCharacter(${idx})">✕</button>
+          </span>
+        `;
+      }).join("");
+    }
+
+    window.removeCharacter = function(idx) {
+      appState.characters.splice(idx, 1);
+      renderHero();
+    };
+
+    document.getElementById("add-char-btn").addEventListener("click", () => {
+      const te = document.getElementById("new-char-te").value.trim();
+      const en = document.getElementById("new-char-en").value.trim();
+      const role = document.getElementById("new-char-role").value.trim();
+      if (!te && !en) return;
+      appState.characters = appState.characters || [];
+      appState.characters.push({ name_te: te || en, name_en: en || te, role: role || "Character" });
+      document.getElementById("new-char-te").value = "";
+      document.getElementById("new-char-en").value = "";
+      document.getElementById("new-char-role").value = "";
+      renderHero();
+    });
+
+    function renderChapters() {
+      const activeSeries = getActiveSeries();
+      const sNum = activeSeries.series_number || appState.active_series_number || 1;
+      const listEl = document.getElementById("chapter-list");
+
+      if (!activeSeries.chapters.length) {
+        listEl.innerHTML = `<div class="empty-state"><p>No chapters yet. Click <strong>+ Add Chapter</strong> in Edit Mode or run the daily generator.</p></div>`;
+        return;
+      }
+
+      // Display newest first while keeping original index for editing
+      const indexed = activeSeries.chapters.map((ch, idx) => ({ ch, idx })).reverse();
+      listEl.innerHTML = indexed.map(({ ch, idx }) => `
+        <article class="chapter-card">
+          <a class="chapter-link" href="story.html?series=${sNum}&ch=${ch.chapter}">
+            <div class="chapter-top">
+              <span class="chapter-num">CHAPTER ${ch.chapter}</span>
+              <span style="font-size:0.85rem; font-weight:600; color:var(--accent);">Read chapter →</span>
+            </div>
+            <h3 class="chapter-title">${ch.title}</h3>
+            <p class="chapter-excerpt">${ch.excerpt || ""}</p>
+          </a>
+          <div class="edit-controls">
+            <button class="btn btn-sm" type="button" onclick="openEditChapter(${idx})">Edit Chapter</button>
+            <button class="btn btn-danger btn-sm" type="button" onclick="deleteChapter(${idx})">Delete Chapter</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderAll() {
+      renderHero();
+      renderChapters();
+    }
+
+    // Chapter Modal Handlers
+    const modal = document.getElementById("chapter-modal");
+
+    document.getElementById("open-new-chapter-btn").addEventListener("click", () => {
+      const activeSeries = getActiveSeries();
+      editingChapterIndex = null;
+      document.getElementById("modal-heading").textContent = "Add New Chapter";
+      document.getElementById("m-ch-num").value = activeSeries.chapters.length + 1;
+      document.getElementById("m-ch-title").value = "";
+      document.getElementById("m-ch-excerpt").value = "";
+      document.getElementById("m-ch-body").value = "";
+      modal.classList.add("open");
+    });
+
+    window.openEditChapter = function(idx) {
+      const activeSeries = getActiveSeries();
+      const ch = activeSeries.chapters[idx];
+      editingChapterIndex = idx;
+      document.getElementById("modal-heading").textContent = `Edit Chapter ${ch.chapter}`;
+      document.getElementById("m-ch-num").value = ch.chapter;
+      document.getElementById("m-ch-title").value = ch.title || "";
+      document.getElementById("m-ch-excerpt").value = ch.excerpt || "";
+      const plainParas = (ch.html_paragraphs || [])
+        .map(p => p.replace(/^<p>/i, "").replace(/<\/p>$/i, "").trim())
+        .join("\n\n");
+      document.getElementById("m-ch-body").value = plainParas;
+      modal.classList.add("open");
+    };
+
+    window.deleteChapter = function(idx) {
+      const activeSeries = getActiveSeries();
+      if (!confirm(`Remove Chapter ${activeSeries.chapters[idx].chapter}?`)) return;
+      activeSeries.chapters.splice(idx, 1);
+      appState.next_chapter = activeSeries.chapters.length + 1;
+      renderChapters();
+    };
+
+    document.getElementById("m-cancel").addEventListener("click", () => modal.classList.remove("open"));
+
+    document.getElementById("m-save").addEventListener("click", () => {
+      const activeSeries = getActiveSeries();
+      const num = parseInt(document.getElementById("m-ch-num").value || "1", 10);
+      const title = document.getElementById("m-ch-title").value.trim() || `Chapter ${num}`;
+      const excerpt = document.getElementById("m-ch-excerpt").value.trim();
+      const rawBody = document.getElementById("m-ch-body").value.trim();
+      const html_paragraphs = rawBody
+        ? rawBody.split(/\n\s*\n/).map(line => `<p>${line.trim()}</p>`)
+        : ["<p></p>"];
+
+      const entry = {
+        chapter: num,
+        title,
+        excerpt,
+        html_paragraphs,
+        published_at: new Date().toISOString()
+      };
+
+      if (editingChapterIndex === null) {
+        activeSeries.chapters.push(entry);
+      } else {
+        activeSeries.chapters[editingChapterIndex] = entry;
+      }
+      activeSeries.chapters.sort((a, b) => a.chapter - b.chapter);
+      appState.next_chapter = activeSeries.chapters.length + 1;
+      modal.classList.remove("open");
+      renderChapters();
+    });
+
+    // Download JSON fallback
+    document.getElementById("download-json-btn").addEventListener("click", () => {
+      [
+        { name: "stories.json", data: appStories },
+        { name: "series_state.json", data: appState }
+      ].forEach(file => {
+        const blob = new Blob([JSON.stringify(file.data, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = file.name;
+        a.click();
+      });
+    });
+
+    // Direct GitHub API Commit
+    async function commitFileToGitHub(repo, branch, token, path, contentObj, message) {
+      const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`;
+      const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+      };
+      let sha = undefined;
+      const getRes = await fetch(apiUrl, { headers });
+      if (getRes.ok) {
+        const meta = await getRes.json();
+        sha = meta.sha;
+      }
+      const utf8Bytes = new TextEncoder().encode(JSON.stringify(contentObj, null, 2) + "\n");
+      let binary = "";
+      utf8Bytes.forEach(b => binary += String.fromCharCode(b));
+      const base64Content = btoa(binary);
+
+      const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ message, content: base64Content, branch, sha })
+      });
+      if (!putRes.ok) {
+        const err = await putRes.text();
+        throw new Error(`Failed saving ${path}: ${err}`);
+      }
+    }
+
+    document.getElementById("publish-github-btn").addEventListener("click", async () => {
+      const repo = document.getElementById("gh-repo").value.trim();
+      const branch = document.getElementById("gh-branch").value.trim() || "main";
+      const token = document.getElementById("gh-token").value.trim();
+      const statusEl = document.getElementById("studio-status");
+
+      localStorage.setItem("ak_gh_repo", repo);
+      localStorage.setItem("ak_gh_branch", branch);
+      if (token) localStorage.setItem("ak_gh_token", token);
+
+      if (!token) {
+        statusEl.style.color = "var(--danger)";
+        statusEl.textContent = "Please paste your GitHub Personal Access Token (or use Download JSON Files).";
+        return;
+      }
+
       try {
+        statusEl.style.color = "var(--accent)";
+        statusEl.textContent = "Publishing changes to GitHub...";
+        await commitFileToGitHub(repo, branch, token, "series_state.json", appState, "Update series_state.json via Studio Edit Mode");
+        await commitFileToGitHub(repo, branch, token, "stories.json", appStories, "Update stories.json via Studio Edit Mode");
+        statusEl.style.color = "var(--success)";
+        statusEl.textContent = "Saved to GitHub! GitHub Pages will refresh in ~30–60 seconds.";
+      } catch (err) {
+        statusEl.style.color = "var(--danger)";
+        statusEl.textContent = err.message;
+      }
+    });
+
+    async function init() {
+      try {
+        const cacheBust = `?t=${Date.now()}`;
         const [configRes, stateRes, storiesRes] = await Promise.all([
-          fetch("story_config.json"),
-          fetch("series_state.json"),
-          fetch("stories.json")
+          fetch("story_config.json" + cacheBust),
+          fetch("series_state.json" + cacheBust),
+          fetch("stories.json" + cacheBust)
         ]);
         const config = configRes.ok ? await configRes.json() : {};
-        const state = stateRes.ok ? await stateRes.json() : {};
-        const stories = storiesRes.ok ? await storiesRes.json() : {};
+        appState = stateRes.ok ? await stateRes.json() : {};
+        appStories = storiesRes.ok ? await storiesRes.json() : { series: [] };
 
         if (config.site_title) {
           document.title = `${config.site_title} — అక్షర లోకం`;
           document.getElementById("site-title").textContent = config.site_title;
         }
+        syncInputsFromState();
+        renderAll();
 
-        const activeSeriesNum = state.active_series_number || 1;
-        document.getElementById("series-badge").textContent = `Series ${activeSeriesNum}`;
-        document.getElementById("series-title").textContent = state.series_title || "Akshara Lokam";
-
-        const locParts = [state.city, state.state].filter(Boolean);
-        document.getElementById("series-location").textContent =
-          locParts.length ? `Setting: ${locParts.join(", ")}` : "";
-
-        const charEl = document.getElementById("character-list");
-        const chars = Array.isArray(state.characters) ? state.characters : [];
-        if (chars.length) {
-          charEl.innerHTML = chars.map(c => {
-            const label = c.name_te ? `${c.name_te} (${c.name_en || ""})` : (c.name || c.name_en || "");
-            const role = c.role ? ` · ${c.role}` : "";
-            return `<span class="char-chip"><strong>${label}</strong>${role}</span>`;
-          }).join("");
+        if (new URLSearchParams(window.location.search).get("edit") === "1") {
+          setEditMode(true);
         }
-
-        const seriesList = stories.series || [];
-        const activeSeries =
-          seriesList.find(s => s.series_number === activeSeriesNum) ||
-          seriesList[seriesList.length - 1] ||
-          { chapters: [] };
-
-        const chapters = [...(activeSeries.chapters || [])].reverse();
-        const listEl = document.getElementById("chapter-list");
-
-        if (!chapters.length) {
-          listEl.innerHTML = `<div class="empty-state"><p>First chapter arrives at 7:00 AM daily.</p></div>`;
-          return;
-        }
-
-        const sNum = activeSeries.series_number || activeSeriesNum;
-        listEl.innerHTML = chapters.map(ch => `
-          <a class="chapter-card" href="story.html?series=${sNum}&ch=${ch.chapter}">
-            <div class="chapter-top">
-              <span class="chapter-num">CHAPTER ${ch.chapter}</span>
-              <span class="read-link">Read chapter →</span>
-            </div>
-            <h3 class="chapter-title">${ch.title}</h3>
-            <p class="chapter-excerpt">${ch.excerpt || ""}</p>
-          </a>
-        `).join("");
       } catch (err) {
         document.getElementById("chapter-list").innerHTML =
           `<div class="empty-state"><p>Unable to load chapters right now.</p></div>`;
       }
     }
-    loadChapters();
+    init();
   </script>
 </body>
 </html>
