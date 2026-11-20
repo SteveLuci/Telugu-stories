@@ -96,7 +96,7 @@
       flex-wrap: wrap;
       align-items: center;
       gap: 0.5rem 1.1rem;
-      margin: 1.15rem 0 1.75rem;
+      margin: 1.15rem 0 1rem;
     }
 
     .nav-group a {
@@ -112,6 +112,54 @@
     .nav-group a:hover, .nav-group a.active {
       color: var(--accent);
       border-bottom-color: var(--accent);
+    }
+
+    /* Category Ribbon: Bedtime & Child Stories on the left, then Suspense, Thriller, Romance, etc. */
+    .category-ribbon {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.65rem 0.75rem;
+      margin-bottom: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      scrollbar-width: thin;
+    }
+
+    .ribbon-btn {
+      flex: 0 0 auto;
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.38rem 0.85rem;
+      border-radius: 999px;
+      font-family: "Plus Jakarta Sans", "Noto Sans Telugu", sans-serif;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .ribbon-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .ribbon-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    [data-theme="dark"] .ribbon-btn.active { color: #111215; }
+
+    .ribbon-divider {
+      flex: 0 0 1px;
+      height: 22px;
+      background: var(--border);
+      margin: 0 0.15rem;
     }
 
     .btn {
@@ -134,7 +182,6 @@
     .btn-danger { color: var(--danger); border-color: var(--danger); }
     .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.78rem; border-radius: 8px; }
 
-    /* WordPress-like Studio & Customizer */
     .studio-panel {
       display: none;
       background: var(--surface);
@@ -324,7 +371,10 @@
       align-items: center;
       gap: 0.75rem;
       margin-bottom: 0.45rem;
+      flex-wrap: wrap;
     }
+
+    .badge-group { display: flex; gap: 0.45rem; align-items: center; flex-wrap: wrap; }
 
     .chapter-num {
       font-family: "Plus Jakarta Sans", sans-serif;
@@ -333,6 +383,17 @@
       color: var(--accent);
       background: var(--accent-soft);
       padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+    }
+
+    .cat-tag {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: 0.18rem 0.6rem;
       border-radius: 6px;
     }
 
@@ -412,6 +473,19 @@
       <a href="privacy.html">Privacy Policy</a>
     </nav>
 
+    <!-- Category Ribbon: Bedtime Stories & Child Stories on the left, then Suspense, Thriller, Romance, etc. -->
+    <div id="category-ribbon" class="category-ribbon" role="navigation" aria-label="Story Categories">
+      <button class="ribbon-btn" data-cat="Bedtime Stories" type="button">Bedtime Stories</button>
+      <button class="ribbon-btn" data-cat="Child Stories" type="button">Child Stories</button>
+      <span class="ribbon-divider" aria-hidden="true"></span>
+      <button class="ribbon-btn active" data-cat="All" type="button">All Stories</button>
+      <button class="ribbon-btn" data-cat="Suspense" type="button">Suspense</button>
+      <button class="ribbon-btn" data-cat="Thriller" type="button">Thriller</button>
+      <button class="ribbon-btn" data-cat="Romance" type="button">Romance</button>
+      <button class="ribbon-btn" data-cat="Drama" type="button">Drama</button>
+      <button class="ribbon-btn" data-cat="Mystery" type="button">Mystery</button>
+    </div>
+
     <!-- WordPress-Style Studio & Customizer Panel -->
     <section class="studio-panel" aria-label="WordPress Style Customizer and Editor">
       <div class="studio-header">
@@ -428,7 +502,6 @@
         <button class="btn btn-sm" data-tab="tab-publish" type="button">GitHub Connection</button>
       </div>
 
-      <!-- Tab 1: Story & Series -->
       <div id="tab-content" class="tab-pane active">
         <div class="studio-grid">
           <label class="field">
@@ -450,7 +523,6 @@
         </label>
       </div>
 
-      <!-- Tab 2: WordPress-Style Customizer -->
       <div id="tab-customize" class="tab-pane">
         <div class="preset-row">
           <button class="btn btn-sm" type="button" onclick="applyPreset('parchment')">Warm Parchment</button>
@@ -508,7 +580,6 @@
         </div>
       </div>
 
-      <!-- Tab 3: GitHub Connection -->
       <div id="tab-publish" class="tab-pane">
         <div class="studio-grid">
           <label class="field">
@@ -548,7 +619,7 @@
     </section>
 
     <div class="section-head">
-      <div class="section-label">Published Chapters</div>
+      <div id="section-label" class="section-label">Published Chapters</div>
       <button id="open-new-chapter-btn" class="btn btn-primary btn-sm edit-only" type="button">+ Add Chapter</button>
     </div>
 
@@ -574,10 +645,22 @@
           <input id="m-ch-num" type="number" min="1" />
         </label>
         <label class="field">
-          Chapter Title (Telugu / English)
-          <input id="m-ch-title" type="text" />
+          Category
+          <select id="m-ch-cat">
+            <option value="Bedtime Stories">Bedtime Stories</option>
+            <option value="Child Stories">Child Stories</option>
+            <option value="Suspense">Suspense</option>
+            <option value="Thriller">Thriller</option>
+            <option value="Romance">Romance</option>
+            <option value="Drama">Drama</option>
+            <option value="Mystery">Mystery</option>
+          </select>
         </label>
       </div>
+      <label class="field" style="margin-bottom:0.85rem;">
+        Chapter Title (Telugu / English)
+        <input id="m-ch-title" type="text" />
+      </label>
       <label class="field" style="margin-bottom:0.85rem;">
         Short Excerpt (shown on home card)
         <textarea id="m-ch-excerpt" style="min-height:65px;"></textarea>
@@ -612,12 +695,28 @@
     let appState = {};
     let appStories = { series: [] };
     let editingChapterIndex = null;
+    let selectedCategory = "All";
 
     document.getElementById("gh-repo").value = localStorage.getItem("ak_gh_repo") || "SteveLuci/Telugu-stories";
     document.getElementById("gh-branch").value = localStorage.getItem("ak_gh_branch") || "main";
     document.getElementById("gh-token").value = localStorage.getItem("ak_gh_token") || "";
 
-    // Tabs inside Studio
+    // Category ribbon selection
+    document.querySelectorAll(".ribbon-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectedCategory = btn.dataset.cat;
+        document.querySelectorAll(".ribbon-btn").forEach(b => b.classList.toggle("active", b === btn));
+        const url = new URL(window.location.href);
+        if (selectedCategory === "All") {
+          url.searchParams.delete("category");
+        } else {
+          url.searchParams.set("category", selectedCategory);
+        }
+        window.history.replaceState({}, "", url);
+        renderChapters();
+      });
+    });
+
     document.querySelectorAll("[data-tab]").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll("[data-tab]").forEach(b => b.classList.remove("btn-primary"));
@@ -649,9 +748,7 @@
       document.getElementById("brand-eyebrow").textContent = d.eyebrow || "Daily Telugu Serial Fiction";
       document.getElementById("footer-copy").textContent = d.footer_text || "© Akshara Lokam";
 
-      if (d.accent) {
-        root.style.setProperty("--accent", d.accent);
-      }
+      if (d.accent) root.style.setProperty("--accent", d.accent);
       if (d.bg && root.getAttribute("data-theme") !== "dark") {
         root.style.setProperty("--bg", d.bg);
       } else if (root.getAttribute("data-theme") === "dark") {
@@ -808,29 +905,44 @@
       const activeSeries = getActiveSeries();
       const sNum = activeSeries.series_number || appState.active_series_number || 1;
       const listEl = document.getElementById("chapter-list");
+      const labelEl = document.getElementById("section-label");
 
-      if (!activeSeries.chapters.length) {
-        listEl.innerHTML = `<div class="empty-state"><p>No chapters yet. Click <strong>+ Add Chapter</strong> in Edit Mode or run the daily generator.</p></div>`;
+      labelEl.textContent = selectedCategory === "All"
+        ? "Published Chapters"
+        : `${selectedCategory} Stories`;
+
+      const indexed = activeSeries.chapters
+        .map((ch, idx) => ({ ch, idx }))
+        .filter(({ ch }) => selectedCategory === "All" || (ch.category || "Drama") === selectedCategory)
+        .reverse();
+
+      if (!indexed.length) {
+        listEl.innerHTML = `<div class="empty-state"><p>No stories in <strong>${selectedCategory}</strong> yet. Use <strong>+ Add Chapter</strong> in Edit Mode or select <strong>All Stories</strong>.</p></div>`;
         return;
       }
 
-      const indexed = activeSeries.chapters.map((ch, idx) => ({ ch, idx })).reverse();
-      listEl.innerHTML = indexed.map(({ ch, idx }) => `
-        <article class="chapter-card">
-          <a class="chapter-link" href="story.html?series=${sNum}&ch=${ch.chapter}">
-            <div class="chapter-top">
-              <span class="chapter-num">CHAPTER ${ch.chapter}</span>
-              <span style="font-size:0.85rem; font-weight:600; color:var(--accent);">Read chapter →</span>
+      listEl.innerHTML = indexed.map(({ ch, idx }) => {
+        const cat = ch.category || "Drama";
+        return `
+          <article class="chapter-card">
+            <a class="chapter-link" href="story.html?series=${sNum}&ch=${ch.chapter}">
+              <div class="chapter-top">
+                <div class="badge-group">
+                  <span class="chapter-num">CHAPTER ${ch.chapter}</span>
+                  <span class="cat-tag">${cat}</span>
+                </div>
+                <span style="font-size:0.85rem; font-weight:600; color:var(--accent);">Read chapter →</span>
+              </div>
+              <h3 class="chapter-title">${ch.title}</h3>
+              <p class="chapter-excerpt">${ch.excerpt || ""}</p>
+            </a>
+            <div class="edit-controls">
+              <button class="btn btn-sm" type="button" onclick="openEditChapter(${idx})">Edit Chapter</button>
+              <button class="btn btn-danger btn-sm" type="button" onclick="deleteChapter(${idx})">Delete Chapter</button>
             </div>
-            <h3 class="chapter-title">${ch.title}</h3>
-            <p class="chapter-excerpt">${ch.excerpt || ""}</p>
-          </a>
-          <div class="edit-controls">
-            <button class="btn btn-sm" type="button" onclick="openEditChapter(${idx})">Edit Chapter</button>
-            <button class="btn btn-danger btn-sm" type="button" onclick="deleteChapter(${idx})">Delete Chapter</button>
-          </div>
-        </article>
-      `).join("");
+          </article>
+        `;
+      }).join("");
     }
 
     function renderAll() {
@@ -845,6 +957,7 @@
       editingChapterIndex = null;
       document.getElementById("modal-heading").textContent = "Add New Chapter";
       document.getElementById("m-ch-num").value = activeSeries.chapters.length + 1;
+      document.getElementById("m-ch-cat").value = selectedCategory === "All" ? "Drama" : selectedCategory;
       document.getElementById("m-ch-title").value = "";
       document.getElementById("m-ch-excerpt").value = "";
       document.getElementById("m-ch-body").value = "";
@@ -857,6 +970,7 @@
       editingChapterIndex = idx;
       document.getElementById("modal-heading").textContent = `Edit Chapter ${ch.chapter}`;
       document.getElementById("m-ch-num").value = ch.chapter;
+      document.getElementById("m-ch-cat").value = ch.category || "Drama";
       document.getElementById("m-ch-title").value = ch.title || "";
       document.getElementById("m-ch-excerpt").value = ch.excerpt || "";
       const plainParas = (ch.html_paragraphs || [])
@@ -879,6 +993,7 @@
     document.getElementById("m-save").addEventListener("click", () => {
       const activeSeries = getActiveSeries();
       const num = parseInt(document.getElementById("m-ch-num").value || "1", 10);
+      const category = document.getElementById("m-ch-cat").value || "Drama";
       const title = document.getElementById("m-ch-title").value.trim() || `Chapter ${num}`;
       const excerpt = document.getElementById("m-ch-excerpt").value.trim();
       const rawBody = document.getElementById("m-ch-body").value.trim();
@@ -888,6 +1003,7 @@
 
       const entry = {
         chapter: num,
+        category,
         title,
         excerpt,
         html_paragraphs,
@@ -980,6 +1096,14 @@
 
     async function init() {
       try {
+        const urlCat = new URLSearchParams(window.location.search).get("category");
+        if (urlCat) {
+          selectedCategory = urlCat;
+          document.querySelectorAll(".ribbon-btn").forEach(b => {
+            b.classList.toggle("active", b.dataset.cat === selectedCategory);
+          });
+        }
+
         const cacheBust = `?t=${Date.now()}`;
         const [configRes, stateRes, storiesRes] = await Promise.all([
           fetch("story_config.json" + cacheBust),
